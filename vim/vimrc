@@ -1,0 +1,115 @@
+" .config/vim/vimrc
+
+" QoL Improvements
+
+  " Enable mouse
+  set mouse=a
+
+  " Easily view text
+  set wrap
+  set linebreak
+
+  " Easily switch between & update buffers
+  set hidden
+  set autoread
+
+  " Undo across vim sessions
+  set undofile
+  let &undodir = expand('~/.local/vimundo')
+
+  " Allow typos
+  command! W w
+  command! Q q
+  command! Wq wq
+
+" Configuration
+
+  " Allow project-local .vimrcs
+  set exrc
+  set secure
+
+  " Find packages in ~/.config/vim
+  set runtimepath^=~/.config/vim
+  set runtimepath+=~/.config/vim/after
+  set packpath^=~/.config/vim
+  set packpath+=~/.config/vim/after
+
+  " Keep viminfo in ~/.config/vim
+  set viminfofile=~/.config/vim/viminfo
+
+" Navigation
+
+  " Line numbers
+  set nu
+  set rnu
+
+  " Search
+  set incsearch
+  set hlsearch
+  set scrolloff=1
+
+  " Jump between splits
+  let mapleader = " "
+  nnoremap <Leader>h <C-w>h
+  nnoremap <Leader>j <C-w>j
+  nnoremap <Leader>k <C-w>k
+  nnoremap <Leader>l <C-w>l
+
+" Code Editing
+
+  " Tabs
+  set expandtab
+  set tabstop=2
+  set shiftwidth=2
+  set autoindent
+
+  " Auto-extend comments
+  autocmd FileType * setlocal formatoptions+=r
+  autocmd FileType * setlocal formatoptions+=o
+
+  " Insert trailing space in /* */ comments
+  autocmd FileType c,cpp,go,rust,systemverilog setlocal comments=s1:/*,mf:*\ ,ex:*/
+
+" Code Highlighting & Errors
+
+  " Highlight code
+  syntax on
+
+  " Linters for ALE to reference
+  let g:ale_linters = {
+  \  'c': ['gcc', 'clang'],
+  \  'cpp': ['gcc', 'clang'],
+  \  'go': ['gofmt', 'govet'],
+  \  'rust': ['analyzer'],
+  \  'systemverilog': ['verilator'],
+  \  'tex': ['chktex', 'lacheck'],
+  \}
+
+  " Format fixers
+  let g:ale_fixers = {
+  \  '*': ['remove_trailing_lines', 'trim_whitespace'],
+  "\  'go': ['gofmt'],
+  "\  'rust': ['rustfmt'],
+  \}
+
+  " Additional per-language compilation options
+  let g:ale_verilog_verilator_options = get(g:, 'ale_verilog_verilator_options', '') . ' --timing -Wno-MODDUP '
+
+  " Fix format on save
+  let g:ale_fix_on_save = 1
+
+  " Don't rerun the linter until save
+  let g:ale_lint_on_text_changed = 'never'
+  let g:ale_lint_on_insert_leave = 0
+  let g:ale_lint_on_enter = 0
+
+  " Don't highlight error code within a line
+  let g:ale_set_highlights = 0
+
+  " Don't highlight lines within the LocList
+  highlight QuickFixLine ctermbg=NONE ctermfg=NONE cterm=NONE guibg=NONE guifg=NONE gui=NONE
+
+  " Keybinds to easily toggle errors
+  command! E ALEPopulateLocList
+  command! C noh | ALEReset | lclose
+  command! Ec lclose

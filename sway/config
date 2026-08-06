@@ -1,0 +1,191 @@
+# ~/.config/sway/config
+
+### Use Alt for mod
+set $mod Mod1
+
+### Sway
+
+  # Reload the configuration file
+  bindsym $mod+Shift+r reload
+
+  # Exit sway
+  bindsym $mod+Ctrl+Backspace exec swaynag -t warning -m 'Exit Sway?' -B 'Yes, exit sway' 'swaymsg exit'
+
+### Applications
+
+  # Start a browser
+  bindsym $mod+Space exec firefox
+
+  # Start a terminal
+  bindsym $mod+Return exec kitty
+
+  # Open nmtui
+  bindsym $mod+n exec kitty nmtui
+
+  # Open/close slack
+  bindsym $mod+s exec slack
+  bindsym $mod+Shift+s exec killall slack
+
+### Device
+
+  # Create a blurred lock screen
+  set $lock '~/.local/bin/create_lock_image.sh && swaylock -f -i /tmp/sway_lock_image.png'
+
+  # Lock or sleep
+  bindsym $mod+Escape exec $lock
+  bindsym $mod+Shift+Escape exec $lock; exec systemctl sleep
+
+### Window Management
+
+  # Kill focused window
+  bindsym $mod+Shift+q kill
+
+  # Click or select a window to focus
+  focus_follows_mouse no
+
+  # Move your focus around
+  bindsym $mod+h focus left
+  bindsym $mod+j focus down
+  bindsym $mod+k focus up
+  bindsym $mod+l focus right
+
+  # Move the focused window with the same, but add Shift
+  bindsym $mod+Shift+h move left
+  bindsym $mod+Shift+j move down
+  bindsym $mod+Shift+k move up
+  bindsym $mod+Shift+l move right
+
+### Workspace Management
+
+  # Switch to workspace
+  bindsym $mod+1 workspace number 1
+  bindsym $mod+2 workspace number 2
+  bindsym $mod+3 workspace number 3
+  bindsym $mod+4 workspace number 4
+  bindsym $mod+5 workspace number 5
+  bindsym $mod+6 workspace number 6
+  bindsym $mod+7 workspace number 7
+  bindsym $mod+8 workspace number 8
+  bindsym $mod+9 workspace number 9
+  bindsym $mod+0 workspace number 10
+
+  bindsym $mod+minus scratchpad show
+
+  # Move focused container to workspace
+  bindsym $mod+Shift+1 move container to workspace number 1
+  bindsym $mod+Shift+2 move container to workspace number 2
+  bindsym $mod+Shift+3 move container to workspace number 3
+  bindsym $mod+Shift+4 move container to workspace number 4
+  bindsym $mod+Shift+5 move container to workspace number 5
+  bindsym $mod+Shift+6 move container to workspace number 6
+  bindsym $mod+Shift+7 move container to workspace number 7
+  bindsym $mod+Shift+8 move container to workspace number 8
+  bindsym $mod+Shift+9 move container to workspace number 9
+  bindsym $mod+Shift+0 move container to workspace number 10
+
+  bindsym $mod+Shift+minus move scratchpad
+
+### Layout
+
+  # Choose whether to split the next window
+  # horizontally or vertically
+  bindsym $mod+g splith
+  bindsym $mod+v splitv
+
+  # Switch the current container between different layout styles
+  bindsym $mod+w layout tabbed
+  bindsym $mod+q layout toggle split
+
+  # Use Alt+(Shift)+Tab for easy navigation in tabbed mode
+  bindsym $mod+Shift+Tab focus left
+  bindsym $mod+Tab focus right
+
+  # Resize windows using the keyboard
+  bindsym $mod+r mode "resize"
+
+  # Make the current focus fullscreen
+  bindsym $mod+Shift+a fullscreen
+
+### Appearance
+
+    default_border pixel 3
+    default_floating_border none
+    client.focused #000000 #000000 #000000 #000000 #00af00
+
+### Key Remappings
+
+  # Rebind windows key as escape
+  bindsym --locked Super_L exec ydotool key 1:1 1:0
+
+  # Rebind Alt+a as home
+  bindsym $mod+a exec ydotool key 56:0 102:1 102:0 56:1
+
+  # Rebind Alt+f as end
+  bindsym $mod+f exec ydotool key 56:0 107:1 107:0 56:1
+
+### Resizing Containers
+  mode "resize" {
+    # left will shrink the containers width
+    # right will grow the containers width
+    # up will shrink the containers height
+    # down will grow the containers height
+    bindsym h resize shrink width 10px
+    bindsym j resize grow height 10px
+    bindsym k resize shrink height 10px
+    bindsym l resize grow width 10px
+
+    # Ditto, with arrow keys
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+
+    # Return to default mode
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym Super_L mode "default"
+  }
+
+### Utilities
+
+  # Special audio keys
+  bindsym --locked XF86AudioMute exec pactl set-sink-mute \@DEFAULT_SINK@ toggle
+  bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume \@DEFAULT_SINK@ -5%
+  bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume \@DEFAULT_SINK@ +5%
+  bindsym --locked XF86AudioMicMute exec pactl set-source-mute \@DEFAULT_SOURCE@ toggle
+
+  # Ctrl+Alt audio layer
+  bindsym --locked $mod+m exec pactl set-sink-mute \@DEFAULT_SINK@ toggle
+  bindsym --locked $mod+Ctrl+j exec pactl set-sink-volume \@DEFAULT_SINK@ -5%
+  bindsym --locked $mod+Ctrl+k exec pactl set-sink-volume \@DEFAULT_SINK@ +5%
+
+  # Special brightness keys
+  bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
+  bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
+
+  # Ctrl+Alt brightness layer
+  bindsym --locked $mod+Ctrl+m exec brightnessctl set 5%-
+  bindsym --locked $mod+Ctrl+i exec brightnessctl set 5%+
+
+  # Ctrl+Alt player layer
+  bindsym --locked $mod+Ctrl+h exec playerctl previous
+  bindsym --locked $mod+Ctrl+l exec playerctl next
+  bindsym --locked $mod+Ctrl+Space exec playerctl play-pause
+
+  # Screenshots
+  bindsym Print exec grimshot copy area
+  bindsym Shift+Print exec grimshot savecopy area
+
+### Misc
+
+  # Drag floating windows by holding down $mod and left mouse button.
+  floating_modifier $mod normal
+
+  # Hide cursor
+  seat seat0 hide_cursor 5000
+
+### Status Bar
+
+  bar {
+    swaybar_command waybar
+  }
