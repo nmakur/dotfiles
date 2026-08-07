@@ -33,7 +33,7 @@ set $mod Mod1
 
   # Lock or sleep
   bindsym $mod+Escape exec $lock
-  bindsym $mod+Shift+Escape exec $lock; exec systemctl sleep
+  bindsym $mod+Shift+Escape exec $lock; exec sleep 1; exec systemctl sleep
 
 ### Window Management
 
