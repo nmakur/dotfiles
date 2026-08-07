@@ -81,11 +81,12 @@
 
   " Tweaks
   hi Statement ctermfg=218
-  hi Type ctermfg=39
+  hi Type ctermfg=75
   hi StorageClass ctermfg=4
   hi Structure ctermfg=4
   hi Identifier ctermfg=7
-  hi Function ctermfg=176
+  hi Function ctermfg=177
+  hi Constant ctermfg=168
 
   " Additional per-language highlight options
   " Use :echo synIDattr(synID(line("."), col("."), 1), "name") to see
