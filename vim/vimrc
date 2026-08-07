@@ -1,4 +1,4 @@
-" .config/vim/vimrc
+" ~/.config/vim/vimrc
 
 " QoL Improvements
 
@@ -70,12 +70,32 @@
   " Insert trailing space in /* */ comments
   autocmd FileType c,cpp,go,rust,systemverilog setlocal comments=s1:/*,mf:*\ ,ex:*/
 
-" Code Highlighting & Errors
+" Theme
 
   " Highlight code
   syntax on
 
-  " Linters for ALE to reference
+  " Grab default theme
+  set background=dark
+  colorscheme wildcharm
+
+  " Tweaks
+  hi Statement ctermfg=218
+  hi Type ctermfg=39
+  hi StorageClass ctermfg=4
+  hi Structure ctermfg=4
+  hi Identifier ctermfg=7
+  hi Function ctermfg=176
+
+  " Additional per-language highlight options
+  " Use :echo synIDattr(synID(line("."), col("."), 1), "name") to see
+  " the type of the object being highlighted
+  hi! link systemverilogStatement Type
+  hi! link verilogStatement Type
+
+" Code Errors (ALE)
+
+  " Linters
   let g:ale_linters = {
   \  'c': ['gcc', 'clang'],
   \  'cpp': ['gcc', 'clang'],
@@ -113,3 +133,89 @@
   command! E ALEPopulateLocList
   command! C noh | ALEReset | lclose
   command! Ec lclose
+
+" Code Highlighting (gutentags, gutentags_plus)
+
+  " Gutentags configuration
+  let g:gutentags_project_root = ['.root', '.git']
+  let g:gutentags_cache_dir = expand('~/.cache/tags')
+  let g:gutentags_plus_nomap = 1
+  let g:gutentags_modules = ['ctags']
+
+  " Per-language ctags arguments
+  let g:gutentags_ctags_extra_args = [
+    \ '--tag-relative=yes',
+    \ '--fields=+ailmnSl',
+    \ '--c-kinds=+gstu',
+    \ '--c++-kinds=+gstuc',
+    \ '--rust-kinds=+gPMestu',
+    \ '--go-kinds=+st',
+    \ '--verilog-kinds=+ctvtm',
+    \ '--systemverilog-kinds=+CTEeStm',
+    \ '--extra=+q'
+    \ ]
+
+  " Symbol cache
+  let g:project_symbol_cache = {}
+
+  " A custom function to for additional highlighting
+  function! HighlightProjectSymbols()
+    let l:supported_filetypes = ['c', 'cpp', 'rust', 'go', 'systemverilog', 'verilog']
+    if index(l:supported_filetypes, &filetype) == -1 | return | endif
+
+    let l:tagfiles = tagfiles()
+    if empty(l:tagfiles) | return | endif
+
+    for l:file in l:tagfiles
+      let l:resolved_file = simplify(fnamemodify(l:file, ':p'))
+      if !filereadable(l:resolved_file) | continue | endif
+
+      let l:current_mtime = getftime(l:resolved_file)
+
+      if !has_key(g:project_symbol_cache, l:resolved_file)
+        let g:project_symbol_cache[l:resolved_file] = {'mtime': 0, 'types_pattern': '', 'mods_pattern': ''}
+      endif
+
+      let l:cache = g:project_symbol_cache[l:resolved_file]
+
+      " 1. ONLY recompute if the tags database changed on disk
+      if l:current_mtime > l:cache['mtime']
+        " Extract typedefs, structs, enums, etc
+        " Expanded character class: [tcgTSEsue]
+        "   t/T = typedefs/tasks
+        "   c/C = C++ classes / SV classes
+        "   g/E = enums
+        "   s/S = C/C++/Rust structs
+        "   u   = C/C++/Rust unions
+        "   e   = Rust enums
+        let l:cmd_types = "awk -F'\t' '$4 ~ /^[tcgTSEsue]$/ && $1 !~ /^[A-Z0-9_]+$/ {print $1}' " . shellescape(l:resolved_file) . " | sort -u"
+        let l:types = systemlist(l:cmd_types)
+        call filter(l:types, 'len(v:val) > 1 && v:val =~ "^[A-Za-z_]"')
+        let l:cache['types_pattern'] = !empty(l:types) ? '\<\(' . join(l:types, '\|') . '\)\>' : ''
+
+        " Extract SV modules
+        " This can potentially be used to extract functions
+        let l:cmd_mods = "awk -F'\t' '$4 == \"m\" && $1 !~ /^[A-Z0-9_]+$/ {print $1}' " . shellescape(l:resolved_file) . " | sort -u"
+        let l:modules = systemlist(l:cmd_mods)
+        call filter(l:modules, 'len(v:val) > 1 && v:val =~ "^[A-Za-z_]"')
+        let l:cache['mods_pattern'] = !empty(l:modules) ? '\<\(' . join(l:modules, '\|') . '\)\>' : ''
+
+        let l:cache['mtime'] = l:current_mtime
+      endif
+
+      " 2. Apply rules natively via standard syntax layer definitions
+      if !empty(l:cache['types_pattern'])
+        execute 'syntax match ' . 'Type' . ' "' . l:cache['types_pattern'] . '" contains=NONE display'
+      endif
+
+      if !empty(l:cache['mods_pattern'])
+        execute 'syntax match ' . 'Function'. ' "' . l:cache['mods_pattern'] . '" contains=NONE display'
+      endif
+    endfor
+  endfunction
+
+  " Automatically highlight custom symbols
+  augroup ProjectSymbolHighlighter
+    autocmd!
+    autocmd BufWinEnter,BufRead,BufWritePost,Syntax * call HighlightProjectSymbols()
+  augroup END
