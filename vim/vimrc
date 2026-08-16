@@ -22,6 +22,9 @@
   command! Q q
   command! Wq wq
 
+  " Return to last edit position when opening files
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
 " Configuration
 
   " Allow project-local .vimrcs
@@ -46,6 +49,8 @@
   " Search
   set incsearch
   set hlsearch
+  set ignorecase
+  set smartcase
   set scrolloff=1
 
   " Jump between splits
@@ -61,7 +66,9 @@
   set expandtab
   set tabstop=2
   set shiftwidth=2
+  set softtabstop=2
   set autoindent
+  set backspace=indent,eol,start
 
   " Auto-extend comments
   autocmd FileType * setlocal formatoptions+=r
@@ -93,6 +100,9 @@
   " the type of the object being highlighted
   hi! link systemverilogStatement Type
   hi! link verilogStatement Type
+  autocmd FileType tex highlight Statement ctermfg=75
+
+  command! GetType echo synIDattr(synID(line("."), col("."), 1), "name")
 
 " Code Errors (ALE)
 
