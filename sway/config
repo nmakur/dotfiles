@@ -185,6 +185,12 @@ set $mod Mod1
   bindsym Print exec grimshot copy area
   bindsym Shift+Print exec grimshot savecopy area
 
+  # Toggle nightlight
+  bindsym --locked $mod+Ctrl+n exec ~/.local/bin/nightlight.sh
+
+  # Loop current track
+  bindsym --locked $mod+Ctrl+Return exec ~/.local/bin/loop.sh
+
 ### Misc
 
   # Drag floating windows by holding down $mod and left mouse button.
