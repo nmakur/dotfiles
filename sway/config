@@ -26,6 +26,10 @@ set $mod Mod1
   bindsym $mod+s exec slack
   bindsym $mod+Shift+s exec killall slack
 
+  # Open/close spotify
+  bindsym $mod+p exec spotify
+  bindsym $mod+Shift+p exec killall spotify
+
 ### Device
 
   # Create a blurred lock screen
