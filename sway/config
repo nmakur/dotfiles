@@ -32,6 +32,9 @@ set $mod Mod1
 
 ### Device
 
+  # Background
+  output * bg ~/.config/sway/sway_background.jpg fill
+
   # Create a blurred lock screen
   set $lock '~/.local/bin/create_lock_image.sh && swaylock -f -i /tmp/sway_lock_image.png'
 
@@ -114,7 +117,9 @@ set $mod Mod1
 
     default_border pixel 3
     default_floating_border none
-    client.focused #000000 #000000 #000000 #000000 #00af00
+    client.focused #00af00 #000000 #000000 #00af00 #00af00
+    gaps inner 3
+    gaps outer 3
 
 ### Key Remappings
 
