@@ -21,6 +21,7 @@
   command! W w
   command! Q q
   command! Wq wq
+  nnoremap q: <Nop>
 
   " Return to last edit position when opening files
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
@@ -96,8 +97,6 @@
   hi Constant ctermfg=168
 
   " Additional per-language highlight options
-  " Use :echo synIDattr(synID(line("."), col("."), 1), "name") to see
-  " the type of the object being highlighted
   hi! link systemverilogStatement Type
   hi! link verilogStatement Type
   autocmd FileType tex highlight Statement ctermfg=75
