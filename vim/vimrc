@@ -26,6 +26,9 @@
   " Return to last edit position when opening files
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
+  " System clipboard integration
+  xnoremap +y "0y:call system('wl-copy', @0)<CR>
+
 " Configuration
 
   " Allow project-local .vimrcs
