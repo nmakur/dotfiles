@@ -200,7 +200,7 @@ set $mod Mod1
   seat seat0 hide_cursor 5000
 
   # Execute background noise to prevent an audio delay on pause
-  exec swaymsg exec "sleep 3 && play -q -n synth sine 5 vol 0.001 repeat -"
+  exec swaymsg exec "sleep 3 && play -q -r 48000 -n -t alsa -b 16 -c 2 synth sin 18 vol 0.001 repeat -"
 
 ### Status Bar
 
