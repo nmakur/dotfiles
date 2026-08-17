@@ -67,8 +67,7 @@
   " FZF
   nnoremap <leader>f :Files<CR>
   let g:fzf_buffers_jump = 1
-  let g:fzf_layout = { 'down': '20%' }
-
+  let g:fzf_layout = { 'window': { 'width': 1.0, 'height': 0.2, 'yoffset': 1.0, 'border': 'top' } }
   let g:fzf_vim = {}
   let g:fzf_vim.preview_window = ['hidden']
 

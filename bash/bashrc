@@ -69,7 +69,7 @@ PS1='\u:\[\e[0m\]\W\[\e[m\] \$ '
 eval "$(fzf --bash)"
 export FZF_DEFAULT_OPS="--bind='ctrl-k:up,ctrl-j:down'"
 export FZF_COMPLETION_TRIGGER='ff'
-export FZF_DEFAULT_COMMAND='rg --hidden'
+export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --no-messages --glob "!.git"'
 
 # Custom function for files and paths (**<TAB>)
 _fzf_compgen_path() {

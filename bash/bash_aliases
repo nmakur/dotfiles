@@ -1,2 +1,3 @@
 alias texcc="~/.local/bin/texcc.sh"
 alias v="vim"
+alias fd="fdfind"
