@@ -100,8 +100,8 @@ set $mod Mod1
   bindsym $mod+v splitv
 
   # Switch the current container between different layout styles
-  bindsym $mod+w layout tabbed
-  bindsym $mod+q layout toggle split
+  bindsym $mod+e layout tabbed
+  bindsym $mod+t layout toggle split
 
   # Use Alt+(Shift)+Tab for easy navigation in tabbed mode
   bindsym $mod+Shift+Tab focus left
