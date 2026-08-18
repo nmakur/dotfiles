@@ -71,6 +71,19 @@
   let g:fzf_vim = {}
   let g:fzf_vim.preview_window = ['hidden']
 
+  " Nice buffer navigation for gaps introduced by fzf
+  function! JumpToActiveNth(count)
+    let l:buffers = filter(range(1, bufnr('$')), 'buflisted(v:val)')
+    if a:count > 0 && a:count <= len(l:buffers)
+        execute 'buffer' l:buffers[a:count - 1]
+    else
+        echo "Invalid buffer index"
+    endif
+  endfunction
+
+  command! -nargs=1 B call JumpToActiveNth(<args>)
+  nnoremap <silent> <leader>b :<C-u>call JumpToActiveNth(v:count)<CR>
+
 " Code Editing
 
   " Tabs
