@@ -29,6 +29,9 @@
   " System clipboard integration
   xnoremap +y "0y:call system('wl-copy', @0)<CR>
 
+  " Use bash aliases from within vim
+  let $BASH_ENV = '~/.config/bash/bash_aliases'
+
 " Configuration
 
   " Allow project-local .vimrcs
