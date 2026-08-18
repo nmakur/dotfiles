@@ -1,4 +1,5 @@
 #!/bin/bash
+# ~/.local/bin/keep-audio-awake.sh
 
 sleep 3
 while true; do

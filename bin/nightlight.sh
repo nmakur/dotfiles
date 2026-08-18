@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/bash
+# ~/.local/bin/nightlight.sh
 
 if pkill -0 gammastep 2>/dev/null; then
   pkill gammastep

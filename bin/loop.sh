@@ -1,4 +1,5 @@
 #!/bin/bash
+# ~/.local/bin/loop.sh
 
 current_status=$(playerctl loop)
 
