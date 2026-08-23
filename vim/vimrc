@@ -131,6 +131,12 @@
   hi! link systemverilogStatement Type
   hi! link verilogStatement Type
   autocmd FileType tex highlight Statement ctermfg=75
+  autocmd FileType tex highlight Special ctermfg=75
+  hi! texDelimiter ctermfg=99
+  hi! texStatement ctermfg=33
+  hi! link texSuperScript Special
+  hi! link texSubScript Special
+
 
   command! GetType echo synIDattr(synID(line("."), col("."), 1), "name")
 
