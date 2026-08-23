@@ -85,7 +85,7 @@
     if a:count > 0 && a:count <= len(l:buffers)
         execute 'buffer' l:buffers[a:count - 1]
     else
-        echo "Invalid buffer index"
+        echo "Buffer does not exist"
     endif
   endfunction
 
