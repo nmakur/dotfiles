@@ -71,6 +71,8 @@ export FZF_DEFAULT_OPS="--bind='ctrl-k:up,ctrl-j:down'"
 export FZF_COMPLETION_TRIGGER='ff'
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --no-messages --glob "!.git"'
 
+bind '"\e[Z": "ff\t"'
+
 # Custom function for files and paths (**<TAB>)
 _fzf_compgen_path() {
   rg --files --hidden --follow --no-messages --glob "!.git" "$1"
