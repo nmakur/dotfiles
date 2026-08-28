@@ -6,7 +6,7 @@ return {
       require("mason").setup()
     end,
   },
-  
+
   -- 2. Bridges mason tool paths with lspconfig automatic hooks
   {
     "williamboman/mason-lspconfig.nvim",
@@ -24,7 +24,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     -- CRITICAL NVIM 0.10 FIX: Pins lspconfig to the v1.x branch targeting Nvim 0.10 stability
-    version = "v1.*", 
+    version = "v1.*",
     dependencies = { "williamboman/mason-lspconfig.nvim" },
     config = function()
       local lspconfig = require("lspconfig")
@@ -37,4 +37,3 @@ return {
     end,
   }
 }
-

@@ -151,14 +151,6 @@ local api = vim.api
     end,
   })
 
-  -- Insert trailing space in /* */ comments
-  api.nvim_create_autocmd("FileType", {
-    pattern = { "c", "cpp", "go", "rust", "systemverilog" },
-    callback = function()
-      opt.comments = "s1:/*,mf:* ,ex:*/"
-    end,
-  })
-
   -- Auto-compile on save for latex
   api.nvim_create_autocmd("BufWritePost", {
     pattern = "*.tex",
@@ -189,7 +181,12 @@ local api = vim.api
     hi Identifier ctermfg=7
     hi Function ctermfg=177
     hi Constant ctermfg=168
+    hi Identifier ctermfg=249
   ]])
+
+
+vim.api.nvim_set_hl(0, 'StatusLine', { ctermbg = 22, ctermfg = 7 })
+vim.api.nvim_set_hl(0, 'StatusLineNC', { ctermbg = 0, ctermfg = 7 })
 
   -- C Customization
   api.nvim_set_hl(0, "@type.builtin.c", { link = "Type" })
@@ -197,6 +194,7 @@ local api = vim.api
   -- C++ Customization
   api.nvim_set_hl(0, "@constructor.cpp", { link = "Function" })
   api.nvim_set_hl(0, "@type.builtin.cpp", { link = "Type" })
+  api.nvim_set_hl(0, "@lsp.type.class.cpp", { link = "Type" })
   api.nvim_set_hl(0, "@keyword.modifier.cpp", { link = "Structure" })
   api.nvim_set_hl(0, "@module.cpp", { link = "Structure" })
 
@@ -204,6 +202,8 @@ local api = vim.api
   api.nvim_set_hl(0, "@type.builtin.verilog", { link = "Type" })
   api.nvim_set_hl(0, "@constructor.verilog", { link = "Function" })
   api.nvim_set_hl(0, "@function.builtin.verilog", { link = "PreProc" })
+  api.nvim_set_hl(0, "@operator.verilog", { link = "Special" })
+  api.nvim_set_hl(0, "@keyword.conditional.ternary.verilog", { link = "Special" })
 
   -- Latex Customization
   api.nvim_create_autocmd("FileType", {
@@ -277,3 +277,15 @@ local api = vim.api
       vim.fn.setpos(".", save_cursor)
     end,
   })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "c", "cpp" },
+  callback = function()
+    vim.opt_local.expandtab = true
+    vim.opt_local.tabstop = 2
+    vim.opt_local.shiftwidth = 2
+    vim.opt_local.softtabstop = 2
+  end,
+})
+
+vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, { desc = "Rename variable" })
