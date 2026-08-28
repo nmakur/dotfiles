@@ -109,6 +109,9 @@
   " Insert trailing space in /* */ comments
   autocmd FileType c,cpp,go,rust,systemverilog setlocal comments=s1:/*,mf:*\ ,ex:*/
 
+  " Auto-compile on save for latex
+  autocmd BufWritePost *.tex silent! execute "!texcc % >/dev/null" | redraw!
+
 " Theme
 
   " Highlight code
@@ -126,6 +129,7 @@
   hi Identifier ctermfg=7
   hi Function ctermfg=177
   hi Constant ctermfg=168
+  hi Identifier ctermfg=249
 
   " Additional per-language highlight options
   hi! link systemverilogStatement Type
@@ -136,7 +140,6 @@
   hi! texStatement ctermfg=33
   hi! link texSuperScript Special
   hi! link texSubScript Special
-
 
   command! GetType echo synIDattr(synID(line("."), col("."), 1), "name")
 
@@ -149,7 +152,7 @@
   \  'go': ['gofmt', 'govet'],
   \  'rust': ['analyzer'],
   \  'systemverilog': ['verilator'],
-  \  'tex': ['chktex', 'lacheck'],
+  \  'tex': ['chktex'],
   \}
 
   " Format fixers
@@ -161,6 +164,7 @@
 
   " Additional per-language compilation options
   let g:ale_verilog_verilator_options = get(g:, 'ale_verilog_verilator_options', '') . ' --timing -Wno-MODDUP '
+  let g:ale_tex_chktex_options = get(g:, 'ale_tex_chktex_options', '') . '-W'
 
   " Fix format on save
   let g:ale_fix_on_save = 1
@@ -237,14 +241,14 @@
         "   e   = Rust enums
         let l:cmd_types = "awk -F'\t' '$4 ~ /^[tcgTSEsue]$/ && $1 !~ /^[A-Z0-9_]+$/ {print $1}' " . shellescape(l:resolved_file) . " | sort -u"
         let l:types = systemlist(l:cmd_types)
-        call filter(l:types, 'len(v:val) > 1 && v:val =~ "^[A-Za-z_]"')
+        call filter(l:types, 'v:val =~ "^[A-Za-z_][A-Za-z0-9_]*$"')
         let l:cache['types_pattern'] = !empty(l:types) ? '\<\(' . join(l:types, '\|') . '\)\>' : ''
 
         " Extract SV modules
         " This can potentially be used to extract functions
         let l:cmd_mods = "awk -F'\t' '$4 == \"m\" && $1 !~ /^[A-Z0-9_]+$/ {print $1}' " . shellescape(l:resolved_file) . " | sort -u"
         let l:modules = systemlist(l:cmd_mods)
-        call filter(l:modules, 'len(v:val) > 1 && v:val =~ "^[A-Za-z_]"')
+        call filter(l:modules, 'v:val =~ "^[A-Za-z_][A-Za-z0-9_]*$"')
         let l:cache['mods_pattern'] = !empty(l:modules) ? '\<\(' . join(l:modules, '\|') . '\)\>' : ''
 
         let l:cache['mtime'] = l:current_mtime
