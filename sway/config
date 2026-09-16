@@ -30,6 +30,9 @@ set $mod Mod1
   bindsym $mod+p exec spotify
   bindsym $mod+Shift+p exec killall spotify
 
+  # Open/close todo list
+  bindsym $mod+o exec kitty vim ~/todo.md
+
 ### Device
 
   # Background
@@ -113,6 +116,9 @@ set $mod Mod1
   # Make the current focus fullscreen
   bindsym $mod+Shift+a fullscreen
 
+  # Toggle floating windows
+  bindsym $mod+Shift+f floating toggle
+
 ### Appearance
 
     default_border pixel 3
@@ -133,11 +139,8 @@ set $mod Mod1
   bindsym $mod+f exec ydotool key 56:0 107:1 107:0 56:1
 
 ### Resizing Containers
+
   mode "resize" {
-    # left will shrink the containers width
-    # right will grow the containers width
-    # up will shrink the containers height
-    # down will grow the containers height
     bindsym h resize shrink width 10px
     bindsym k resize grow height 10px
     bindsym j resize shrink height 10px
