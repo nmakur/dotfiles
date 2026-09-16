@@ -85,5 +85,9 @@ _fzf_compgen_dir() {
 
 bind -x '"\C-f": fzf-file-widget'
 
+export XDG_CURRENT_DESKTOP=sway
+
 # PATH
 . "$HOME/.cargo/env"
+export GOPATH=$HOME/.local/share/go
+export PATH=$PATH:$GOPATH/bin

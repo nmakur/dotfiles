@@ -1,5 +1,7 @@
 shopt -s expand_aliases
 
 alias texcc="~/.local/bin/texcc.sh"
-alias v="vim"
+alias sign="~/.local/bin/sign.sh"
+alias v="nvim"
+alias vim="nvim"
 alias fd="fdfind"
