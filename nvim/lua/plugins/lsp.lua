@@ -15,7 +15,7 @@ return {
     dependencies = { "williamboman/mason.nvim" },
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = { "clangd", "rust_analyzer", "svls", "gopls" , "texlab" }
+        ensure_installed = { "clangd", "rust_analyzer", "svls", "gopls" , "texlab" , "millet" }
       })
     end,
   },
@@ -33,7 +33,17 @@ return {
       lspconfig.clangd.setup({})         -- C / C++
       lspconfig.rust_analyzer.setup({})  -- Rust
       lspconfig.svls.setup({})           -- SystemVerilog
-      lspconfig.gopls.setup({})          -- Go
+      lspconfig.gopls.setup({
+  settings = {
+    gopls = {
+      -- Enables gopls to send semantic tokens to Neovim
+      semanticTokens = true,
+    },
+  },
+})
+      lspconfig.texlab.setup({})
+      lspconfig.millet.setup({})
+
     end,
   }
 }

@@ -79,6 +79,30 @@ local api = vim.api
 
   require("config.diagnostics")
 
+vim.api.nvim_create_autocmd('User', { pattern = 'TSUpdate',
+callback = function()
+  require('nvim-treesitter.parsers').sml = {
+    install_info = {
+      url = 'https://github.com/MatthewFluet/tree-sitter-sml/tree/main'
+    },
+  }
+end})
+
+local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+
+parser_config.sml = {
+  install_info = {
+    url = "https://github.com/MatthewFluet/tree-sitter-sml", -- The official community parser
+    files = { "src/parser.c" },
+    location = "tree-sitter-sml",
+    -- If the repository lacks pre-generated queries, it might need to compile from scratch
+    generate = true,
+    branch = "main",
+  },
+  filetype = "sml",
+}
+
+
 ----------------------------------------------------------------------------
 -- Navigation
 ----------------------------------------------------------------------------
@@ -151,14 +175,14 @@ local api = vim.api
     end,
   })
 
-  -- Auto-compile on save for latex
-  api.nvim_create_autocmd("BufWritePost", {
-    pattern = "*.tex",
-    callback = function()
-      vim.cmd('silent! execute "!texcc % >/dev/null"')
-      vim.cmd("redraw!")
-    end,
-  })
+vim.api.nvim_create_autocmd("BufWritePost", {
+  pattern = "*.tex",
+  callback = function()
+    local file = vim.fn.expand("%")
+    local cmd = string.format("latexmk -pdf %s && latexmk -c %s", file, file)
+    vim.fn.jobstart({ "sh", "-c", cmd })
+  end,
+})
 
 ----------------------------------------------------------------------------
 -- Theme
@@ -178,10 +202,10 @@ local api = vim.api
     hi Type ctermfg=75
     hi StorageClass ctermfg=4
     hi Structure ctermfg=4
-    hi Identifier ctermfg=7
     hi Function ctermfg=177
     hi Constant ctermfg=168
-    hi Identifier ctermfg=249
+    hi Identifier ctermfg=252
+    hi Title ctermfg=75
   ]])
 
 
@@ -204,6 +228,42 @@ vim.api.nvim_set_hl(0, 'StatusLineNC', { ctermbg = 0, ctermfg = 7 })
   api.nvim_set_hl(0, "@function.builtin.verilog", { link = "PreProc" })
   api.nvim_set_hl(0, "@operator.verilog", { link = "Special" })
   api.nvim_set_hl(0, "@keyword.conditional.ternary.verilog", { link = "Special" })
+  api.nvim_set_hl(0, "@keyword.modifier.verilog", { link = "Structure" })
+
+  -- GoLang Customization
+  vim.highlight.priorities.semantic_tokens = 50
+  api.nvim_set_hl(0, "@type.builtin.go", { link = "Type" })
+  api.nvim_set_hl(0, "@lsp.mod.readonly.go", { link = "Constant" })
+  api.nvim_set_hl(0, "@module.go", { link = "Structure" })
+
+
+  -- SML Customization
+  --api.nvim_set_hl(0, "smlModPath", { link = "Structure" })
+  --api.nvim_set_hl(0, "smlKeyChar", { link = "Special" })
+
+
+
+  vim.api.nvim_create_autocmd("LspTokenUpdate", {
+    callback = function(args)
+      -- Only evaluate if the current buffer is a Go file
+      if vim.bo[args.buf].filetype ~= "go" then return end
+
+      local token = args.data.token
+
+      -- Check if the semantic token carries the 'readonly' modifier
+      if token.modifiers and token.modifiers.readonly then
+
+        -- Force Neovim to highlight this token at priority 110 using your custom group
+        vim.lsp.semantic_tokens.highlight_token(
+          token,
+          args.buf,
+          args.data.client_id,
+          "@lsp.mod.readonly.go",
+          { priority = 110 } -- Overrides Treesitter's 100
+        )
+      end
+    end,
+  })
 
   -- Latex Customization
   api.nvim_create_autocmd("FileType", {
@@ -279,7 +339,7 @@ vim.api.nvim_set_hl(0, 'StatusLineNC', { ctermbg = 0, ctermfg = 7 })
   })
 
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "c", "cpp" },
+  pattern = { "c", "cpp", "go", "sml"},
   callback = function()
     vim.opt_local.expandtab = true
     vim.opt_local.tabstop = 2
@@ -289,3 +349,26 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, { desc = "Rename variable" })
+
+-- Map 'gd' to go to definition in Normal mode
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'Go to definition' })
+
+-- Open definition in a vertical split
+vim.keymap.set('n', 'gD', '<cmd>rightb vsplit | lua vim.lsp.buf.definition()<CR>', { desc = 'Definition in vertical split on the right' })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "tex", "latex" },
+  callback = function()
+    vim.opt_local.indentexpr = ""
+    vim.opt_local.autoindent = true
+    vim.opt_local.smartindent = false
+    vim.opt_local.cindent = false
+  end,
+})
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*.go",
+  callback = function()
+    vim.lsp.buf.format({ async = false })
+  end,
+})
